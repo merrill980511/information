@@ -1,0 +1,50 @@
+body{
+    padding:0px;
+    margin:0px;
+    background-color:rgb(236, 236, 236);
+}
+
+table{
+    background-color:white;
+    border-radius:10px; 
+    padding-top:20px;/*内容区域以外有颜色的部分*/
+    padding-left:30px;
+    padding-right:30px;
+    padding-bottom:50px;
+    margin:15px;/*有颜色区域外的透明部分，用于和其他区域隔开距离*/
+}
+
+h1{
+   color:white;
+    padding:10px;
+    padding-top:20px;
+   display:flex;
+   justify-content:center;
+   margin-bottom:10px;
+}
+
+a{
+    text-decoration:none;
+}
+
+
+
+/*链接默认颜色*/
+a:link{
+    color:rgb(87,250,255);
+}
+
+/*鼠标悬停颜色*/
+a:hover{
+    color:rgb(230, 115, 21);
+}
+
+/*鼠标点击与释放颜色*/
+a:active{
+    color:rgb(230, 115, 21);
+}
+
+/*链接访问以后的颜色*/
+a:link{
+    color:rgb(87,250,255);
+}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.merrill.information.dao.mapper.UserMapper">
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+    <insert id="saveLogin">
+    INSERT INTO login(email, password) VALUES(#{email}, #{password})
+    </insert>
+    <update id="updateLoginPassword">
+        UPDATE login SET password = #{password} WHERE email = #{email}
+    </update>
+    <update id="updateUserPassword">
+        UPDATE user SET password = #{password} WHERE email = #{email}
+    </update>
+    <select id="checkLogin" resultType="Login">
+    SELECT * FROM login WHERE email = #{email} AND password = #{password}
+    </select>
+    <select id="login" resultType="User">
+    SELECT * FROM user WHERE email = #{email}
+    </select>
+    <select id="queryEmail" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM login WHERE email = #{email}
+    </select>
+    <update id="setLastLogin">
+    UPDATE login SET lastlogin = #{date} WHERE email = #{email}
+    </update>
+    <select id="getLogin" resultType="Login">
+    SELECT * FROM login WHERE email = #{email}
+    </select>
+    <select id="getNumber" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM login
+    </select>
+    <select id="queryForObject" resultType="User">
+        SELECT * FROM user
+        <where>
+            <if test="account != null">
+                AND account LIKE concat('%', #{account}, '%')
+            </if>
+            <if test="name != null">
+                AND name LIKE concat('%', #{name}, '%')
+            </if>
+            <if test="nickname != null">
+                AND nickname LIKE concat('%', #{nickname}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="deleteLogin">
+        DELETE FROM login WHERE email = #{email}
+    </select>
+    <select id="deleteUser">
+        DELETE FROM user WHERE email = #{email}
+    </select>
+</mapper>

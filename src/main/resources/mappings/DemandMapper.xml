@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.merrill.information.dao.mapper.DemandMapper">
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+    <resultMap id="Demand" type="Demand">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="publishtime" property="publishtime"/>
+        <result column="edittime" property="edittime"/>
+        <result column="money" property="money"/>
+        <result column="status" property="status"/>
+        <result column="top" property="top"/>
+        <association property="user" javaType="User">
+            <result column="u_id" property="id"/>
+            <result column="email" property="email"/>
+            <result column="u_name" property="name"/>
+        </association>
+        <association property="sort" javaType="Sort">
+            <result column="s_id" property="id"/>
+            <result column="s_name" property="name"/>
+        </association>
+    </resultMap>
+    <sql id="selectBase">
+        SELECT u.id as u_id, u.email, u.name as u_name, s.id as s_id, s.name as s_name, d.id, d.title, d.top, d.publishtime, d.edittime, d.money, d.content, d.status
+        FROM demand d LEFT JOIN user u ON d.u_id = u.id LEFT JOIN sort s ON d.s_id = s.id
+    </sql>
+    <insert id="save">
+        INSERT INTO demand(title, content, money, status, publishtime, edittime, top, u_id, s_id) VALUES
+        (#{title}, #{content}, #{money}, #{status}, #{publishTime}, #{editTime}, #{top}, #{u_id}, #{s_id})
+    </insert>
+    <update id="update">
+        UPDATE demand SET title = #{title}, content = #{content}, money = #{money}, status = #{status},
+        <if test="publishTime != null">
+            publishTime = #{publishTime},
+        </if>
+        editTime = #{editTime}, top = #{top}, u_id = #{u_id}, s_id = #{s_id} WHERE id = #{id}
+    </update>
+    <update id="setStatus">
+        UPDATE demand SET status = #{status} WHERE id = #{demandId}
+    </update>
+    <select id="listByUserAndStatus" resultMap="Demand">
+        <include refid="selectBase"/>
+        WHERE d.status = #{status} AND d.u_id = #{userId}
+    </select>
+    <select id="listAll" resultMap="Demand">
+        <include refid="selectBase"/>
+        WHERE d.status != -1
+    </select>
+    <select id="getById" resultMap="Demand">
+        <include refid="selectBase"/>
+        WHERE d.id = #{id}
+    </select>
+    <select id="listByUserId" resultMap="Demand">
+        <include refid="selectBase"/>
+        WHERE d.status != -1 AND u_id = #{id}
+    </select>
+    <select id="queryForObject" resultMap="Demand">
+        <include refid="selectBase"/>
+        <where>
+            <if test="keyWord != null">
+                AND d.title LIKE concat('%', #{keyWord}, '%') OR d.content LIKE concat('%', #{keyWord}, '%') OR u.name LIKE
+                concat('%', #{keyWord}, '%')
+            </if>
+            <if test="sortId != -1L">
+                AND s_id = #{sortId}
+            </if>
+            <if test="status != -100">
+                AND status = #{status}
+            </if>
+            <if test="status == -100">
+                AND status != -1
+            </if>
+        </where>
+    </select>
+    <delete id="delete">
+        DELETE FROM demand WHERE id = #{demandId}
+    </delete>
+    <select id="getNumber" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM demand WHERE status != -1
+    </select>
+</mapper>

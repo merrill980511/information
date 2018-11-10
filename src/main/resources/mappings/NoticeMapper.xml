@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.merrill.information.dao.mapper.NoticeMapper">
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+    <resultMap id="Notice" type="Notice">
+        <id column="id" property="id"/>
+        <result column="datetime" property="datetime"/>
+        <result column="message" property="message"/>
+        <result column="title" property="title"/>
+        <association property="admin" javaType="Admin">
+            <result column="account" property="account"/>
+            <result column="name" property="name"/>
+            <result column="email" property="email"/>
+        </association>
+    </resultMap>
+    <sql id="selectBase">
+        SELECT id, datetime, message, account, name, email, title
+        FROM notice n LEFT JOIN admin a ON n.a_id = a.account
+    </sql>
+    <select id="getAllNotice" resultMap="Notice">
+        <include refid="selectBase"/>
+    </select>
+    <select id="getById" resultMap="Notice">
+        <include refid="selectBase"/>
+        WHERE id = #{id}
+    </select>
+    <select id="getNumber" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM notice
+    </select>
+    <select id="queryForObject" resultMap="Notice">
+        <include refid="selectBase"/>
+        <where>
+            <if test="keyWord != null">
+                AND n.title LIKE concat('%', #{keyWord}, '%') OR n.message LIKE concat('%', #{keyWord}, '%') OR a.name LIKE
+                concat('%', #{keyWord}, '%')
+            </if>
+        </where>
+    </select>
+    <delete id="deleteById">
+        DELETE FROM notice WHERE id = #{id}
+    </delete>
+    <insert id="insertNotice">
+        INSERT INTO notice(a_id, datetime, message, title) VALUES (#{account}, #{datetime}, #{message}, #{title})
+    </insert>
+    <update id="update">
+        UPDATE notice SET title = #{title}, message = #{message} WHERE id = #{id}
+    </update>
+</mapper>

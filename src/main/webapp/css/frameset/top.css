@@ -1,0 +1,55 @@
+html{
+    margin:0;
+    padding:0;
+}
+
+body{
+    margin:0;
+    padding:0;
+}
+
+
+h2{
+    text-align:center;
+    margin:0;
+    padding:10px;
+    background-color:rgb(56, 56, 56);
+    color:white;
+}
+
+.corner{
+    color:white;
+}
+
+
+
+form{
+    padding:10px;
+    background-color:rgb(236, 236, 236);
+}
+
+/*去除下划线*/
+a{
+    text-decoration:none;
+}
+
+/*链接默认颜色*/
+a:link{
+    color:black;
+}
+
+/*鼠标悬停颜色*/
+a:hover{
+    color:rgb(230, 115, 21);
+}
+
+/*鼠标点击与释放颜色*/
+a:active{
+    color:rgb(230, 115, 21);
+}
+
+/*链接访问以后的颜色*/
+a:visited{
+    color:black;
+}
+

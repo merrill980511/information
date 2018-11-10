@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.merrill.information.dao.mapper.AdminMapper">
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+
+    <select id="checkLogin" resultType="Login">
+      SELECT account, password FROM admin WHERE account = #{account} AND password = #{password}
+    </select>
+    <select id="login" resultType="Admin">
+      SELECT * FROM admin WHERE account = #{account} AND password = #{password}
+    </select>
+    <update id="setLastLoginTime">
+      UPDATE admin SET lastlogin = #{date} WHERE account = #{account}
+    </update>
+    <update id="update">
+      UPDATE admin SET name = #{name}, birthday = #{birthday}, sex = #{sex},
+      email = #{email}, phone = #{phone}, description = #{description}
+      WHERE account = #{account}
+    </update>
+    <update id="updatePassword">
+      UPDATE admin SET password = #{password}
+      WHERE account = #{account}
+    </update>
+    <select id="getByAccount" resultType="Admin">
+      SELECT * FROM admin WHERE account = #{account}
+    </select>
+</mapper>

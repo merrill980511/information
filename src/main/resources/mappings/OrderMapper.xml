@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.merrill.information.dao.mapper.OrderMapper">
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+    <resultMap id="Order" type="Order">
+        <id column="id" property="id"/>
+        <result column="meet_begin" property="meetBegin"/>
+        <result column="meet_end" property="meetEnd"/>
+        <association property="demand" javaType="Demand">
+            <result column="d_id" property="id"/>
+            <result column="content" property="content"/>
+            <result column="title" property="title"/>
+            <result column="money" property="money"/>
+            <result column="publishtime" property="publishtime"/>
+            <result column="status" property="status"/>
+        </association>
+        <association property="publishUser" javaType="User">
+            <result column="u2_id" property="id"/>
+            <result column="u2_name" property="name"/>
+            <result column="u2_email" property="email"/>
+        </association>
+        <association property="meetUser" javaType="User">
+            <result column="u1_id" property="id"/>
+            <result column="u1_name" property="name"/>
+            <result column="u1_email" property="email"/>
+        </association>
+    </resultMap>
+    <sql id="selectBase">
+        SELECT o.id, o.meet_begin, o.meet_end,
+        u1.id as u1_id, u1.email as u1_email, u1.name as u1_name,
+        u2.id as u2_id, u2.email as u2_email, u2.name as u2_name,
+        d.id as d_id, d.content, d.title, d.money, d.publishtime, d.status
+        FROM `order` o LEFT JOIN user u1 ON o.u_id = u1.id LEFT JOIN demand d ON o.d_id = d.id LEFT JOIN user u2 ON d.u_id = u2.id
+    </sql>
+    <insert id="undertake">
+        INSERT INTO `order`(d_id, u_id, meet_begin) VALUES(#{demandId}, #{userId}, #{date})
+    </insert>
+    <select id="queryMyPublishOrder" resultMap="Order">
+        <include refid="selectBase"/>
+        WHERE u2.id = #{id}
+    </select>
+    <select id="queryMyUndertakeOrder" resultMap="Order">
+        <include refid="selectBase"/>
+        WHERE u1.id = #{id}
+    </select>
+    <select id="getById" resultMap="Order">
+        <include refid="selectBase"/>
+        WHERE o.id = #{id}
+    </select>
+    <update id="finishOrder">
+        UPDATE `order` SET meet_end = #{date} WHERE id = #{id}
+    </update>
+    <select id="listByUserId" resultMap="Order">
+        <include refid="selectBase"/>
+        WHERE u2.id = #{id}
+    </select>
+    <select id="listAll" resultMap="Order">
+        <include refid="selectBase"/>
+        <if test="keyWord != null">
+            WHERE o.id LIKE concat('%', #{keyWord}, '%') OR d.title LIKE concat('%', #{keyWord}, '%')
+            OR u1.name LIKE concat('%', #{keyWord}, '%') OR u2.name LIKE concat('%', #{keyWord}, '%')
+        </if>
+    </select>
+</mapper>
